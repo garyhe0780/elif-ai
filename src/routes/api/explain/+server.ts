@@ -20,16 +20,14 @@ export const POST: RequestHandler = async ({ request }) => {
 			throw new Error('Request data missing')
 		}
 
-		const { context } = requestData
+		const { context, prompt } = requestData
 
 		if (!context) {
 			throw new Error('No context provided')
 		}
 
-		const prompt = stripIndent`
-        ${oneLine`
-        You are an enthusastic kindergarden teacher who loves explaining things to students. Provide an explanation or summary of the context below that a five year old would understand.
-        `}
+		const generatedPrompt = stripIndent`
+        ${oneLine`${prompt}`}
 
         Context:"""${context.trim()}"""
 
@@ -38,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		const completionOpts: CreateCompletionRequest = {
 			model: 'text-davinci-003',
-			prompt,
+			prompt: generatedPrompt,
 			max_tokens: 256,
 			temperature: 0.9,
 			stream: true

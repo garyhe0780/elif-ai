@@ -2,6 +2,7 @@
 	import type { CreateCompletionResponse } from 'openai'
 	import { SSE } from 'sse.js'
 
+	let prompt = '';
 	let context = ''
 	let loading = false
 	let error = false
@@ -16,7 +17,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			payload: JSON.stringify({ context })
+			payload: JSON.stringify({ context, prompt })
 		})
 
 		context = ''
@@ -52,13 +53,19 @@
 	}
 </script>
 
-<h1>Explain It Like I'm Five</h1>
+<h1>Use Chatgpt anyway you want</h1>
 <form on:submit|preventDefault={() => handleSubmit()}>
-	<label for="context">Enter the text you want summarized/explained</label>
-	<textarea name="context" rows="5" bind:value={context} />
-	<button>Explain it</button>
+	<div class="flex flex-col gap-2">
+		<label for="context">Enter the role/prompt you want to set for chatgpt</label>
+		<textarea name="context" rows="5" bind:value={prompt} />
+	</div>
+	<div class="flex flex-col gap-2">
+		<label for="context">Enter the text you want summarized/explained</label>
+		<textarea name="context" rows="5" bind:value={context} />
+	</div>
+	<button>See Magic happen</button>
 	<div class="pt-4">
-		<h2>Explanation:</h2>
+		<h2>Answer:</h2>
 		{#if answer}
 			<p>{answer}</p>
 		{/if}
