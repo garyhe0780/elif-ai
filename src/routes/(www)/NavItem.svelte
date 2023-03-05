@@ -7,7 +7,7 @@
 
 <a
 	href={`/chat/${data.cid}`}
-	class={`group px-4 py-2 flex items-center gap-2 text-gray-700 hover:bg-slate-300 hover:rounded-sm ${active ? 'bg-slate-300 hover:rounded-sm' : ''}`}
+	class={`group px-4 py-2 flex items-center gap-2 text-gray-700 hover:bg-gray-100 hover:rounded-sm ${active ? 'bg-gray-100 hover:rounded-sm' : ''}`}
 >
 	<svg
 		xmlns="http://www.w3.org/2000/svg"

@@ -4,7 +4,7 @@
 </script>
 
 <button
-	class="px-4 py-2 bg-gray-100 rounded-sm flex items-center gap-2"
+	class="px-4 py-2 bg-gray-100 rounded-sm flex items-center gap-2 hover:bg-gray-300"
 	on:click={() => onClicked(prompt)}
 >
 	{prompt}
