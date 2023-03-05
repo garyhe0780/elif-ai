@@ -44,10 +44,14 @@
 				const completionResponse: CreateCompletionResponse = JSON.parse(e.data)
 
 				const [{ text }] = completionResponse.choices
-				messages.push({
-					question: context,
-					answer
-				})
+				messages = [
+					...messages,
+					{
+						question: context,
+						answer,
+					}
+				]
+
 				answer = (answer ?? '') + text
 			} catch (err) {
 				error = true
