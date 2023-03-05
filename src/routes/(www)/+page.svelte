@@ -5,7 +5,18 @@
 
 	import Dialogue from './Dialogue.svelte'
 	import Prompt from './Prompt.svelte'
+	import type { Channel } from '../../model/channel'
+	import { onMount } from 'svelte'
 
+	let syncWorker: Worker | undefined = undefined
+	const loadWorker = async () => {
+		const SyncWorker = await import('$lib/channelWorker?worker')
+		syncWorker = new SyncWorker.default()
+	}
+
+	onMount(loadWorker)
+
+	let channel: Channel | undefined
 	let prompt = ''
 	let context = ''
 	let loading = false
@@ -15,6 +26,15 @@
 
 	const onKeyPressed = (event: KeyboardEvent) => {
 		if (event.key === 'Enter' && context) handleSubmit()
+	}
+
+	async function addChannel() {
+		if (channel) return
+
+		syncWorker?.postMessage({
+			title: context.substring(0, 20),
+			prompt
+		})
 	}
 
 	const handleSubmit = async () => {
@@ -27,8 +47,11 @@
 			answer: '...'
 		})
 
-		// v-binding
+		// for reactive purpose
 		messages = messages
+
+		// add2Channel
+		addChannel()
 
 		const eventSource = new SSE('/api/explain', {
 			headers: {
@@ -61,7 +84,8 @@
 					...(messages.get(uuid) as any),
 					answer
 				})
-				// v-binding
+
+				// for reactive purpose
 				messages = messages
 			} catch (err) {
 				error = true
