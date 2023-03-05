@@ -14,6 +14,7 @@ specifiers:
   eslint: ^8.35.0
   eslint-config-prettier: ^8.6.0
   eslint-plugin-svelte3: ^4.0.0
+  nanoid: ^4.0.1
   openai: ^3.2.1
   postcss: ^8.4.21
   postcss-load-config: ^4.0.1
@@ -34,6 +35,7 @@ specifiers:
 dependencies:
   '@supabase/supabase-js': 2.10.0
   common-tags: 1.8.2
+  nanoid: 4.0.1
   openai: 3.2.1
   sse.js: 0.6.1
   superjson: 1.12.2
@@ -1930,6 +1932,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /nanoid/4.0.1:
+    resolution: {integrity: sha512-udKGtCCUafD3nQtJg9wBhRP3KMbPglUsgV5JVsXhvyBs/oefqb4sqMEhKBBgqZncYowu58p1prsZQBYvAj/Gww==}
+    engines: {node: ^14 || ^16 || >=18}
+    hasBin: true
+    dev: false
 
   /natural-compare-lite/1.4.0:
     resolution: {integrity: sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g==}

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { CreateCompletionResponse } from 'openai'
 	import { SSE } from 'sse.js'
+	import { nanoid } from 'nanoid'
+
 	import Dialogue from './Dialogue.svelte'
 
 	let prompt = ''
@@ -8,15 +10,17 @@
 	let loading = false
 	let error = false
 	let answer = ''
-	let messages: {
-		question: string
-		answer: string
-	}[] = []
+	let messages = new Map<string, { question: string; answer: string }>()
 
 	const handleSubmit = async () => {
 		loading = true
 		error = false
 		answer = ''
+		const uuid = nanoid(7)
+		messages.set(uuid, {
+			question: context,
+			answer: '...'
+		})
 
 		const eventSource = new SSE('/api/explain', {
 			headers: {
@@ -44,15 +48,11 @@
 				const completionResponse: CreateCompletionResponse = JSON.parse(e.data)
 
 				const [{ text }] = completionResponse.choices
-				messages = [
-					...messages,
-					{
-						question: context,
-						answer,
-					}
-				]
-
 				answer = (answer ?? '') + text
+				messages.set(uuid, {
+					...(messages.get(uuid) as any),
+					answer
+				})
 			} catch (err) {
 				error = true
 				loading = false
@@ -67,11 +67,15 @@
 	const setPrompt = (val: string) => {
 		prompt = val
 	}
+
+	$: messageList = Array.from(messages, (entry) => {
+		return entry[1]
+	})
 </script>
 
-{#if messages.length > 0}
+{#if messageList.length > 0}
 	<div class="flex flex-col">
-		{#each messages as m}
+		{#each messageList as m}
 			<Dialogue question={m.question} answer={m.answer} />
 		{/each}
 	</div>
