@@ -4,6 +4,7 @@
 	import { nanoid } from 'nanoid'
 
 	import Dialogue from './Dialogue.svelte'
+	import Prompt from './Prompt.svelte'
 
 	let prompt = ''
 	let context = ''
@@ -95,36 +96,20 @@
 		<h1 class="text-2xl mb-6">ChatGPT Playground</h1>
 		<div class="flex flex-col gap-2">
 			<span>Below are some prompt you can use:</span>
-			<ul class="flex flex-col gap-2">
+			<ul class="flex flex-col gap-2 mb-4">
 				<li>
-					<button
-						class="px-4 py-2 bg-gray-100 rounded-sm flex items-center gap-2"
-						on:click={() =>
+					<Prompt
+						prompt="you are kid garden teacher who love to answer kid's question"
+						onClicked={() =>
 							setPrompt("you are kid garden teacher who love to answer kid's question")}
-					>
-						you are kid garden teacher who love to answer kid's question
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
-							><path fill="none" d="M0 0h24v24H0z" /><path
-								d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-							/></svg
-						>
-					</button>
-				</li>
-				<li>
-					<button
-						class="px-4 py-2 bg-gray-100 rounded-sm flex items-center gap-2"
-						on:click={() =>
-							setPrompt("you are kid garden teacher who love to answer kid's question")}
-					>
-						you are kid garden teacher who love to answer kid's question
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
-							><path fill="none" d="M0 0h24v24H0z" /><path
-								d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-							/></svg
-						>
-					</button>
+					/>
+					<Prompt prompt="you are seo expert" onClicked={() => setPrompt('you are seo expert')} />
 				</li>
 			</ul>
+			<div>Or you can write your own <span class="font-semibold text-lg">prompt</span></div>
+			<div class="border rounded-sm flex ">
+				<input bind:value={prompt} class="px-4 py-2 w-full outline-none" />
+			</div>
 		</div>
 	</div>
 {/if}
