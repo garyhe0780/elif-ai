@@ -1,17 +1,37 @@
 <script lang="ts">
 	import type { CreateCompletionResponse } from 'openai'
+	import type { PageServerData } from './$types'
 	import { SSE } from 'sse.js'
+	import { nanoid } from 'nanoid'
 
-	let prompt = ''
+	import Dialogue from '../../Dialogue.svelte'
+	import Prompt from '../../Prompt.svelte'
+
+	export let data: PageServerData
+	let prompt = data.channel?.prompt ?? '';
 	let context = ''
 	let loading = false
 	let error = false
 	let answer = ''
+	let messages = new Map<string, { question: string; answer: string }>()
+
+
+	const onKeyPressed = (event: KeyboardEvent) => {
+		if (event.key === 'Enter' && context) handleSubmit()
+	}
 
 	const handleSubmit = async () => {
 		loading = true
 		error = false
 		answer = ''
+		const uuid = nanoid(7)
+		messages.set(uuid, {
+			question: context.trim().replace('\n', ''),
+			answer: '...'
+		})
+
+		// for reactive purpose
+		messages = messages
 
 		const eventSource = new SSE('/api/explain', {
 			headers: {
@@ -39,8 +59,14 @@
 				const completionResponse: CreateCompletionResponse = JSON.parse(e.data)
 
 				const [{ text }] = completionResponse.choices
-
 				answer = (answer ?? '') + text
+				messages.set(uuid, {
+					...(messages.get(uuid) as any),
+					answer
+				})
+
+				// for reactive purpose
+				messages = messages
 			} catch (err) {
 				error = true
 				loading = false
@@ -55,48 +81,51 @@
 	const setPrompt = (val: string) => {
 		prompt = val
 	}
+
+	$: messageList = Array.from(messages, (entry) => {
+		return entry[1]
+	})
 </script>
 
-<div class="flex-1 flex flex-col items-center mt-12 gap-4">
-	<h1 class="text-2xl mb-6">ChatGPT Playground</h1>
-	<div class="bg-red-500 text-white px-4 py-2 rounded-md">
-		You need to set a prompt(aka role) first for ChatGPT API to work
+<svelte:window on:keypress={onKeyPressed} />
+
+{#if messageList.length > 0}
+	<div class="flex flex-col">
+		{#each messageList as m}
+			<Dialogue question={m.question} answer={m.answer} />
+		{/each}
 	</div>
-	<div class="flex flex-col gap-2">
-		<span>Below are some prompt you can use:</span>
-		<ul class="flex flex-col gap-2">
-			<li>
-				<button
-					class="px-4 py-2 bg-gray-100 rounded-sm flex items-center gap-2"
-					on:click={() => setPrompt("you are kid garden teacher who love to answer kid's question")}
-				>
-					you are kid garden teacher who love to answer kid's question
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
-						><path fill="none" d="M0 0h24v24H0z" /><path
-							d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-						/></svg
-					>
-				</button>
-			</li>
-			<li>
-				<button
-					class="px-4 py-2 bg-gray-100 rounded-sm flex items-center gap-2"
-					on:click={() => setPrompt("you are kid garden teacher who love to answer kid's question")}
-				>
-					you are kid garden teacher who love to answer kid's question
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
-						><path fill="none" d="M0 0h24v24H0z" /><path
-							d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-						/></svg
-					>
-				</button>
-			</li>
-		</ul>
+{:else}
+	<div class="flex-1 flex flex-col items-center mt-12 gap-4">
+		<h1 class="text-2xl mb-6">ChatGPT Playground</h1>
+		<div class="flex flex-col gap-2">
+			<span>Below are some prompt you can use:</span>
+			<ul class="flex flex-col gap-2 mb-4">
+				<li>
+					<Prompt
+						prompt="you are kid garden teacher who love to answer kid's question"
+						onClicked={() =>
+							setPrompt("you are kid garden teacher who love to answer kid's question")}
+					/>
+					<Prompt prompt="you are seo expert" onClicked={() => setPrompt('you are seo expert')} />
+				</li>
+			</ul>
+			<div>Or you can write your own <span class="font-semibold text-lg">prompt</span></div>
+			<div class="border rounded-sm flex ">
+				<input bind:value={prompt} class="px-4 py-2 w-full outline-none" />
+			</div>
+		</div>
 	</div>
-</div>
+{/if}
+
 <div class="absolute bottom-12 left-0 right-0">
-	<form class="flex flex-col lg:mx-auto lg:max-w-3xl" on:submit|preventDefault={() => handleSubmit()}>
-		<div class="flex items-center gap-4 border border-gray-200 py-2 px-4 rounded-md w-full shadow-md mb-2">
+	<form
+		class="flex flex-col lg:mx-auto lg:max-w-3xl"
+		on:submit|preventDefault={() => handleSubmit()}
+	>
+		<div
+			class="flex items-center gap-4 border border-gray-200 py-2 px-4 rounded-md w-full shadow-md mb-2"
+		>
 			<div class="flex-1 h-[24px]">
 				<textarea
 					disabled={!prompt}
@@ -113,7 +142,10 @@
 			</button>
 		</div>
 		{#if !prompt}
-			<p class="text-xs text-gray-400">You need to choose one of those prompts or create your own first to start a new conversion with ChatGPT</p>
+			<p class="text-xs text-gray-400">
+				You need to choose one of those prompts or create your own first to start a new conversion
+				with ChatGPT
+			</p>
 		{/if}
 	</form>
 </div>

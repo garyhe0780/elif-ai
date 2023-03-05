@@ -23,11 +23,11 @@ export async function getChannelByUser(user: User): Promise<Channel[]> {
 	return data as Channel[]
 }
 
-export async function getChannelById(cid: Channel['cid']): Promise<Channel | null> {
+export async function getChannelById(cid: Channel['cid'], user: User): Promise<Channel | null> {
 	const { data, error } = await supabase
 		.from<'channels', Channel>('channels')
 		.select('*')
-		.eq('cid', cid)
+		.match({ cid: cid, uid: user.id })
 		.maybeSingle()
 
 	if (error) {

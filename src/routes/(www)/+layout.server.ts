@@ -4,19 +4,18 @@ import { parse } from 'superjson'
 import { getChannelByUser } from '../../model/channel'
 import type { LayoutServerLoad } from './$types'
 
-export const load = (async ({ url, cookies }) => {
+export const load = (async ({ url, cookies, params }) => {
 	const maybeUser = cookies.get('sessionid')
-	const path = url.pathname
-
 	if (!maybeUser) {
 		throw redirect(303, '/login')
 	}
 
 	const user = parse(maybeUser) satisfies User
 	const channels = await getChannelByUser(user)
+	const cid = params.cid;
 
 	return {
-		path,
+		cid,
 		user,
 		channels
 	}

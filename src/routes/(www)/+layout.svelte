@@ -22,7 +22,7 @@
 			<ul>
 				{#each data.channels as channel}
 					<li>
-						<NavItem data={channel} />
+						<NavItem data={channel} active={channel.cid === data.cid}/>
 					</li>
 				{/each}
 			</ul>
