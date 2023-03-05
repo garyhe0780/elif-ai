@@ -8,7 +8,7 @@
 <div class="flex h-screen w-screen">
 	<aside class="flex flex-col px-2 py-4 gap-12 w-64 border-r  border-gray-200">
 		<nav class="flex flex-col gap-2 px-2">
-			<a href="/" class="px-4 py-2 border rounded-sm flex gap-2 items-center text-gray-600">
+			<a href="/chat" class="px-4 py-2 border rounded-sm flex gap-2 items-center text-gray-600">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 24 24"
