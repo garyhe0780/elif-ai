@@ -27,9 +27,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 
 		const generatedPrompt = stripIndent`
-        ${oneLine`${prompt.trim()}`}
+        ${oneLine`${prompt.trim().replace('\n', '')}`}
 
-        Context:"""${context.trim()}"""
+        Context:"""${context.trim().replace('\n', '')}"""
 
         Answer:
         `

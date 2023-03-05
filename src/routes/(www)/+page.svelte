@@ -23,7 +23,7 @@
 		answer = ''
 		const uuid = nanoid(7)
 		messages.set(uuid, {
-			question: context,
+			question: context.trim().replace('\n', ''),
 			answer: '...'
 		})
 
