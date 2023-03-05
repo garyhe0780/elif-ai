@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 
 		const generatedPrompt = stripIndent`
-        ${oneLine`${prompt}`}
+        ${oneLine`${prompt.trim()}`}
 
         Context:"""${context.trim()}"""
 
