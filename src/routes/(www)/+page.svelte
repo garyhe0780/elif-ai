@@ -22,6 +22,9 @@
 			answer: '...'
 		})
 
+		// v-binding
+		messages = messages
+
 		const eventSource = new SSE('/api/explain', {
 			headers: {
 				'Content-Type': 'application/json'
@@ -53,6 +56,8 @@
 					...(messages.get(uuid) as any),
 					answer
 				})
+				// v-binding
+				messages = messages
 			} catch (err) {
 				error = true
 				loading = false
