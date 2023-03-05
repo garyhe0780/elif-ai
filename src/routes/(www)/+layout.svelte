@@ -27,6 +27,8 @@
 		</nav>
 	</aside>
 	<main class="flex-1 overflow-hidden flex flex-col gap-2 p-12 relative">
-		<slot />
+		<div class="h-auto overflow-y-scroll mb-4">
+			<slot />
+		</div>
 	</main>
 </div>
