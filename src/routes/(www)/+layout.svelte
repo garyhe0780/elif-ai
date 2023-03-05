@@ -19,11 +19,13 @@
 				>
 				New chat
 			</a>
-			{#each data.channels as channel}
-				<li>
-					<NavItem data={channel} />
-				</li>
-			{/each}
+			<ul>
+				{#each data.channels as channel}
+					<li>
+						<NavItem data={channel} />
+					</li>
+				{/each}
+			</ul>
 		</nav>
 	</aside>
 	<main class="flex-1 overflow-hidden flex flex-col gap-2 relative">
