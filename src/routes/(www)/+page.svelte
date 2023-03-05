@@ -12,6 +12,10 @@
 	let answer = ''
 	let messages = new Map<string, { question: string; answer: string }>()
 
+	const onKeyPressed = (event: KeyboardEvent) => {
+		if (event.key === 'Enter' && context) handleSubmit()
+	}
+
 	const handleSubmit = async () => {
 		loading = true
 		error = false
@@ -77,6 +81,8 @@
 		return entry[1]
 	})
 </script>
+
+<svelte:window on:keypress={onKeyPressed} />
 
 {#if messageList.length > 0}
 	<div class="flex flex-col">

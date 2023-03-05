@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const completionOpts: CreateCompletionRequest = {
 			model: 'text-davinci-003',
 			prompt: generatedPrompt,
-			max_tokens: 256,
+			max_tokens: 1000,
 			temperature: 0.9,
 			stream: true
 		}
